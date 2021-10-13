@@ -14,9 +14,9 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.provisioning.InMemoryUserDetailsManager;
 
 
-
 @EnableWebSecurity
 public class MultiHttpSecurityConfig {
+
 
     @Configuration
     @Order(1)
@@ -25,11 +25,10 @@ public class MultiHttpSecurityConfig {
         protected void configure(HttpSecurity http) throws Exception {
             http
                     .authorizeRequests()
-                    .antMatchers("/", "/home").permitAll()
+                    .antMatchers("/", "/home", "/login").permitAll()
                     .anyRequest().authenticated()
                     .and()
                     .httpBasic();
-
         }
     }
 
