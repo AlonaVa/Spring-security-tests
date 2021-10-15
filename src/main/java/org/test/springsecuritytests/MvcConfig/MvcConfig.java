@@ -1,4 +1,4 @@
-package org.test.springsecuritytests;
+package org.test.springsecuritytests.MvcConfig;
 
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.ViewControllerRegistry;
