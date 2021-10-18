@@ -1,17 +1,16 @@
-package org.test.springsecuritytests.security;
+package org.test.springsecuritytests.security.providers;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.BadCredentialsException;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
+import org.test.springsecuritytests.security.authentication.CustomAuthentication;
 
 
 @Component
@@ -41,7 +40,7 @@ public class CustomAuthenticationProvider implements AuthenticationProvider {
         UserDetails u = userDetailsService.loadUserByUsername(username);
         if (u != null) {
             if (passwordEncoder.matches(password, u.getPassword())) {
-                var a = new UsernamePasswordAuthenticationToken(username, password, u.getAuthorities());
+                var a = new CustomAuthentication(username, password, u.getAuthorities());
                 return a;
             }
         }
@@ -50,6 +49,6 @@ public class CustomAuthenticationProvider implements AuthenticationProvider {
 
     @Override
     public boolean supports(Class<?> authType) {// type of Authentication
-        return UsernamePasswordAuthenticationToken.class.equals(authType);
+        return CustomAuthentication.class.equals(authType);
     }
 }
