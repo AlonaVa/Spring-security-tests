@@ -26,14 +26,6 @@ public class CustomAuthenticationProvider implements AuthenticationProvider {
 
     @Override
     public Authentication authenticate(Authentication authentication) throws AuthenticationException {
-        // implement authentication logic
-
-        // if the request is authentication you should return here
-        // an fully authenticated Authentication instance
-
-        // if the request is not authenticated you should throw AuthenticationException
-
-        // the Authentication isn't supported by this AP -> return null
         String username = authentication.getName();
         String password = String.valueOf(authentication.getCredentials());
 

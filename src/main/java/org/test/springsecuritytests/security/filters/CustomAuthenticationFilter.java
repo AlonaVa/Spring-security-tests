@@ -10,7 +10,8 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 import org.test.springsecuritytests.security.authentication.CustomAuthentication;
 
-import javax.servlet.*;
+import javax.servlet.FilterChain;
+import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
@@ -24,43 +25,26 @@ public class CustomAuthenticationFilter extends OncePerRequestFilter {
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException, UsernameNotFoundException {
-        String user = request.getHeader("user");
-        String password = request.getHeader("password");
-
-        CustomAuthentication customAuthentication = new CustomAuthentication(user, password); // (Object principal, Object credentials)
-        Authentication authResult = manager.authenticate(customAuthentication);
-        if (authResult.isAuthenticated()) {
-            // If I have fully authentication instance, add to the security context
-            // do not think about the security context for now.
-            SecurityContextHolder.getContext().setAuthentication(authResult);
-
-
-            filterChain.doFilter(request, response);
+        String user = request.getHeader("Authorization");
+        var username = request.getHeader("username");
+        var password = request.getHeader("password");
+        if (user == null) {
+            //use formLogin()
+        } else {
+            Authentication basicAuthentication = new CustomAuthentication(username, password);
+            Authentication authResult = manager.authenticate(basicAuthentication);
+            if (authResult.isAuthenticated()) {
+                SecurityContextHolder.getContext().setAuthentication(authResult);
+            }
         }
+
+        filterChain.doFilter(request, response);
     }
 
-//    @Override
-//    public void doFilter(ServletRequest req, ServletResponse resp, FilterChain chain) throws IOException, ServletException {
-//        HttpServletRequest request = (HttpServletRequest) req;
-//        HttpServletResponse response = (HttpServletResponse) resp;
-//        String user = request.getHeader("user");
-//        String password = request.getHeader("password");
-//
-//        CustomAuthentication customAuthentication = new CustomAuthentication(user, password); // (Object principal, Object credentials)
-//        Authentication authResult = manager.authenticate(customAuthentication);
-//        if (authResult.isAuthenticated()) {
-//            // If I have fully authentication instance, add to the security context
-//            // do not think about the security context for now.
-//            SecurityContextHolder.getContext().setAuthentication(authResult);
-//
-//
-//            chain.doFilter(req, resp);
-//        }
-//    }
 
     @Override
     protected boolean shouldNotFilter(HttpServletRequest request) throws ServletException {
-        return request.getServletPath().equals("/login")||request.getServletPath().equals("/")||request.getServletPath().equals("/home");
+        return request.getServletPath().equals("/login") || request.getServletPath().equals("/") || request.getServletPath().equals("/home");
     }
 
 }
