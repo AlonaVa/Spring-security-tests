@@ -35,8 +35,7 @@ public class MultiHttpSecurityConfig {
                     .anyRequest().authenticated().and()
                     .httpBasic()
                     .and()
-                    .formLogin()
-                    .loginPage("/login");
+                    .oauth2Login();
         }
     }
 
